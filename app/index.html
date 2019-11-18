@@ -5,10 +5,10 @@
     <style>
     	#message {
     		position: absolute;
-    		transform: translate(-50%, -100%);
+    		transform: translate(-100%, -100%);
     		top: 100%;
-    		left: 50%;
-    		width: 80%;
+    		left: 90%;
+    		width: 60%;
     		height: 80px;
     	}
     	#send {
@@ -22,22 +22,21 @@
     </style>
   </head>
   <body>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="helper.js"></script>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src = "helper.js"></script>
+    <script src = "events.js"></script>
 		<input type = "text" id = "message" placeholder = "Type something" onkeypress = "event.keyCode == 13 ? sendMessage() : 0">
 		<input type = "button" id = "send" value = "Send" onclick = "sendMessage()">
 		<script>
 			const socket = io();
 			const message = document.getElementById('message');
 			const cmdPrefix = '__set';
+
+			events.defineEvents(socket);
+
 			function sendMessage() {
 				if (message.value != '') {
-					const action = helper.getAction(message.value, helper.actions);
-					if (action) {
-						helper.executeCommand(action, message.value, socket);
-					} else {
-						socket.emit('SendMessage', message.value);
-					}
+					events.sendMessage(message.value);
 				} else{
 					message.placeholder = 'Please type something!!';
 					setTimeout(function() {
