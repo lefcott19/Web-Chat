@@ -5,8 +5,6 @@ messages.messageHeight = 60;
 messages.imgSize = messages.messageHeight * 0.8;
 
 messages.print = function(userId, messageText) {
-	console.log('print');
-	console.log(userId, messageText);
 	let messageContainer = document.createElement('div');
 	messageContainer.setAttribute('class', 'messageContainer');
 	messageContainer.style.top = messages.currTop + 'px';
@@ -26,6 +24,14 @@ messages.print = function(userId, messageText) {
 		userName.setAttribute('class', 'userName name_' + userId);
 		userName.style.left = messages.messageHeight + 'px';
 		userName.innerHTML = helper.getUserName(userId);
+		let userNameStr = helper.getUserName(userId);
+
+		if (!userNameStr) {
+			userName.innerHTML = 'disconnected';
+			userName.style.textDecoration = 'line-through';
+		} else {
+			userName.innerHTML = userNameStr;
+		}
 		messageContainer.appendChild(userName);
 	}
 	let message = document.createElement('div');
@@ -48,9 +54,24 @@ messages.updateUser = function(userId) {
 		imgs[k].src = helper.getAvatarSrc(userId);
 	}
 
+	let userName = helper.getUserName(userId);
 	let names = document.getElementsByClassName('name_' + userId)
 	for (let k = 0; k < names.length; k++) {
-		names[k].innerHTML = helper.getUserName(userId);
+		if (!userName) {
+			names[k].innerHTML = 'disconnected';
+			names[k].style.textDecoration = 'line-through';
+			names[k].style.opacity = 0.6;
+		} else {
+			names[k].innerHTML = userName;
+		}
+	}
+}
+
+messages.updateUserList = function() {
+	userList.innerHTML = '';
+	const ids = Object.keys(helper.users);
+	for (let k = 0; k < ids.length; k++) {
+		userList.innerHTML += helper.getUserName(ids[k]) + '<br>';
 	}
 }
 

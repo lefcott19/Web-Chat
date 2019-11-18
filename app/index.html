@@ -3,6 +3,9 @@
 	<head>
 		<title>Socket.IO chat</title>
 		<style>
+			body {
+				background: #ABC;
+			}
 			#send {
 				position: absolute;
 				transform: translate(-100%, -100%);
@@ -26,10 +29,39 @@
 				left: 90%;
 				width: 60%;
 				height: 86%;
-				border-style: bold;
+				border-style: solid;
 				border-width: 3px;
 				background-color: #DDD;
 				border-radius: 4px;
+				overflow: scroll;
+			}
+			#users {
+				position: absolute;
+				left: 1%;
+				top: 1%;
+				width: 26%;
+				height: 95%;
+				background-color: #EEE;
+				border-style: solid;
+				border-width: 3px;
+				border-radius: 4px;
+				text-shadow: 1px 1px 1px;
+				overflow: hidden;
+			}
+			#userList {
+				position: absolute;
+				transform: translate(-50%);
+				left: 50%;
+				top: 5%;
+				width: 80%;
+				height: 90%;
+				background-color: #DED;
+				border-style: solid;
+				border-width: 2px;
+				border-top-left-radius: 7px;
+				border-bottom-right-radius: 7px;
+				text-shadow: 0 0 0;
+				text-align: center;
 				overflow: scroll;
 			}
 			.messageContainer {
@@ -37,15 +69,16 @@
 				transform: translate(-50%);
 				left: 50%;
 				width: 95%;
-				border-style: bold;
+				border-style: solid;
 				border-width: 2px;
 				background-color: #BBB;
 				border-radius: 4px;
+				transition: 0.3s;
 			}
 			.avatarImg {
 				position: absolute;
 				transform: translate(-50%, -50%);
-				border-style: bold;
+				border-style: solid;
 				border-width: 1.5px;
 				border-radius: 50%;
 			}
@@ -59,11 +92,12 @@
 			.message {
 				position: absolute;
 				transform: translate(-100%, -50%);
-				width: 80%;
+				width: 65%;
 				height: 100%;
 				left: 100%;
 				top: 50%;
 				font-size: 11px;
+				text-shadow: 0 0 2px;
 			}
 		</style>
 	</head>
@@ -73,12 +107,16 @@
 		<script src = 'helper.js'></script>
 		<script src = 'events.js'></script>
 		<div id = 'container'></div>
+		<div id = 'users'>-- Connected users
+			<div id = 'userList'></div>
+		</div>
 		<input type = 'text' id = 'messageInput' placeholder = 'Type something' onkeypress = 'event.keyCode == 13 ? sendMessage() : 0'>
 		<input type = 'button' id = 'send' value = 'Send' onclick = 'sendMessage()'>
 		<script>
 			const socket = io();
 			const messageInput = document.getElementById('messageInput');
 			const container = document.getElementById('container');
+			const userList = document.getElementById('userList');
 			const cmdPrefix = '__set';
 
 			events.defineEvents(socket);

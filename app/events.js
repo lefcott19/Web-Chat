@@ -6,7 +6,6 @@ events.defineEvents = function(socket) {
 		socket.emit('GetAvatars');
 		socket.emit('GetMessages');
 		if (helper.id && helper.users[helper.id]) {
-			console.log('emit PostUser');
 			socket.emit('PostUser', helper.users[helper.id]);
 		} else {
 			socket.emit('GetUserId');
@@ -23,24 +22,22 @@ events.defineEvents = function(socket) {
 			messages.print(null, data.messageToUser);
 		}
 		messages.updateUser(data.id);
+		messages.updateUserList();
 	});
 
 	socket.on('GetUserId', function(userId) {
-		console.log('Got ID: ' + userId);
 		helper.id = userId;
-		// TODO Visual update
 	});
 
 	socket.on('GetUsers', function(users) {
-		console.log('Got users');
-		console.log(users);
 		helper.users = users;
-		// TODO Visual update
+		messages.updateUserList();
 	});
 
 	socket.on('DeleteUser', function(id) {
 		delete helper.users[id];
-		// TODO Visual update
+		messages.updateUserList();
+		messages.updateUser(id);
 	});
 
 	socket.on('GetAvatars', function(avatars) {

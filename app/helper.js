@@ -42,17 +42,24 @@ helper.parseFunctions = function(obj) {
 
 // False for valid command or help for invalid or help required
 helper.getHelp = function(action, params, length) {
-	console.log('getHelp', action, params, length);
 	return params.length == length && params.indexOf('') === -1 && params.indexOf('--help') === -1 ? false : helper.getDocs(action);
 }
 
 helper.getUserName = function(userId) {
 	const id = userId || helper.id;
-	return helper.users[id].name.base + (helper.users[id].name.count > 0 ? (' - ' + helper.users[id].name.count) : '');
+	if (helper.users[userId]) {
+		return helper.users[id].name.base + (helper.users[id].name.count > 0 ? (' - ' + helper.users[id].name.count) : '');
+	} else {
+		return false;
+	}
 }
 
 helper.getAvatarSrc = function(userId) {
-	return helper.avatars[helper.users[userId].avatar.value - 1];
+	if (helper.users[userId]) {
+		return helper.avatars[helper.users[userId].avatar.value - 1];
+	} else {
+		return helper.crossImage;
+	}
 }
 
 helper.actions = {
@@ -61,3 +68,4 @@ helper.actions = {
 		help: '  | ..set --key-- --value--<br>  | You can set the following values:'
 	}
 };
+helper.crossImage = 'https://cdn1.iconfinder.com/data/icons/basic-ui-icon-rounded-colored/512/icon-02-512.png';
