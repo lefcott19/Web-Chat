@@ -3,24 +3,48 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
+    	#message {
+    		position: absolute;
+    		transform: translate(-50%, -100%);
+    		top: 100%;
+    		left: 50%;
+    		width: 80%;
+    		height: 80px;
+    	}
+    	#send {
+    		position: absolute;
+    		transform: translate(-100%, -100%);
+    		top: 100%;
+    		left: 100%;
+    		width: 10%;
+    		height: 80px;
+    	}
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="helper.js"></script>
+		<input type = "text" id = "message" placeholder = "Type something" onkeypress = "event.keyCode == 13 ? sendMessage() : 0">
+		<input type = "button" id = "send" value = "Send" onclick = "sendMessage()">
 		<script>
-			var socket = io();
+			const socket = io();
+			const message = document.getElementById('message');
+			const cmdPrefix = '__set';
+			function sendMessage() {
+				if (message.value != '') {
+					const action = helper.getAction(message.value, helper.actions);
+					if (action) {
+						helper.executeCommand(action, message.value, socket);
+					} else {
+						socket.emit('SendMessage', message.value);
+					}
+				} else{
+					message.placeholder = 'Please type something!!';
+					setTimeout(function() {
+						message.placeholder = 'Type something';
+					}, 1000);
+				}
+			}
 		</script>
   </body>
 </html>
