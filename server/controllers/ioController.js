@@ -109,6 +109,15 @@ module.exports = {
 				socket.emit('GetUserId', socket.id);
 				socket.emit('GetUsers', auxHelper.excludeKeys(users, ignoredKeys, true));
 			});
+
+			socket.on('GetAvatars', function() {
+				socket.emit('GetAvatars', avatars);
+			});
+
+			socket.on('SendMessage', function(message) {
+				io.emit('GetMessage', { userId: socket.id, message: message });
+			});
+
 		});
 	}
 };

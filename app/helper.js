@@ -5,7 +5,7 @@ helper.getAction = function(message, actions) {
 	const names = Object.keys(actions);
 	for (let k = 0; k < names.length; k++) {
 		if (message.startsWith(actions[names[k]].command + ' ')) {
-			return actions[names[k]].command;
+			return names[k];
 		}
 	}
 	return false;
@@ -19,11 +19,11 @@ helper.getDocs = function(action) {
 			return '  | Waiting user list...';
 		}
 		let message = helper.actions[action].help;
-		const values = Object.keys(helper.user);
+		const values = Object.keys(helper.users[helper.id]);
 		for(let k = 0; k < values.length; k++) {
-			const currInfo = helper.user[values[k]];
+			const currInfo = helper.users[helper.id][values[k]];
 			const hasValues = currInfo instanceof Object;
-			message += '\n    | ' + values[k] + (currInfo.values ? ' -> Available values: ' + currInfo.values : ' -> Any value available');
+			message += '| ' + values[k] + (currInfo.values ? ' -> Available values: ' + currInfo.values : ' -> Any value available');
 		}
 		return message;
 }
@@ -39,19 +39,16 @@ helper.parseFunctions = function(obj) {
 	}
 	return newObj;
 }
+
 // False for valid command or help for invalid or help required
 helper.getHelp = function(action, params, length) {
+	console.log('getHelp', action, params, length);
 	return params.length == length && params.indexOf('') === -1 && params.indexOf('--help') === -1 ? false : helper.getDocs(action);
-}
-
-helper.print = function(message) {
-	console.log('PRINT-------------------\n' + message);
 }
 
 helper.actions = {
 	set: {
-		command: '** set',
-		help: `  | ** set <key> <value>
-  | You can set the following values:`
+		command: '..set',
+		help: '  | ..set --key-- --value--<br>  | You can set the following values:'
 	}
 };

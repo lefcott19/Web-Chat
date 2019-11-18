@@ -1,49 +1,95 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <style>
-    	#message {
-    		position: absolute;
-    		transform: translate(-100%, -100%);
-    		top: 100%;
-    		left: 90%;
-    		width: 60%;
-    		height: 80px;
-    	}
-    	#send {
-    		position: absolute;
-    		transform: translate(-100%, -100%);
-    		top: 100%;
-    		left: 100%;
-    		width: 10%;
-    		height: 80px;
-    	}
-    </style>
-  </head>
-  <body>
-    <script src = "/socket.io/socket.io.js"></script>
-    <script src = "helper.js"></script>
-    <script src = "events.js"></script>
-		<input type = "text" id = "message" placeholder = "Type something" onkeypress = "event.keyCode == 13 ? sendMessage() : 0">
-		<input type = "button" id = "send" value = "Send" onclick = "sendMessage()">
+	<head>
+		<title>Socket.IO chat</title>
+		<style>
+			#send {
+				position: absolute;
+				transform: translate(-100%, -100%);
+				top: 100%;
+				left: 100%;
+				width: 10%;
+				height: 80px;
+			}
+			#messageInput {
+				position: absolute;
+				transform: translate(-100%, -100%);
+				top: 100%;
+				left: 90%;
+				width: 60%;
+				height: 10%;
+			}
+			#container {
+				position: absolute;
+				transform: translate(-100%);
+				top: 0.5%;
+				left: 90%;
+				width: 60%;
+				height: 86%;
+				border-style: bold;
+				border-width: 3px;
+				background-color: #DDD;
+				border-radius: 4px;
+				overflow: scroll;
+			}
+			.messageContainer {
+				position: absolute;
+				transform: translate(-50%);
+				left: 50%;
+				width: 95%;
+				border-style: bold;
+				border-width: 2px;
+				background-color: #BBB;
+				border-radius: 4px;
+			}
+			.avatarImg {
+				position: absolute;
+				transform: translate(-50%, -50%);
+				border-style: bold;
+				border-width: 1.5px;
+				border-radius: 50%;
+			}
+			.userName {
+				position: absolute;
+				transform: translate(0, -50%);
+			}
+			.message {
+				position: absolute;
+				transform: translate(-100%, -50%);
+				width: 80%;
+				height: 100%;
+				left: 100%;
+				top: 50%;
+				font-size: 11px;
+			}
+		</style>
+	</head>
+	<body>
+		<script src = '/socket.io/socket.io.js'></script>
+		<script src = 'messages.js'></script>
+		<script src = 'helper.js'></script>
+		<script src = 'events.js'></script>
+		<div id = 'container'></div>
+		<input type = 'text' id = 'messageInput' placeholder = 'Type something' onkeypress = 'event.keyCode == 13 ? sendMessage() : 0'>
+		<input type = 'button' id = 'send' value = 'Send' onclick = 'sendMessage()'>
 		<script>
 			const socket = io();
-			const message = document.getElementById('message');
+			const messageInput = document.getElementById('messageInput');
+			const container = document.getElementById('container');
 			const cmdPrefix = '__set';
 
 			events.defineEvents(socket);
 
 			function sendMessage() {
-				if (message.value != '') {
-					events.sendMessage(message.value);
+				if (messageInput.value != '') {
+					events.sendMessage(messageInput.value);
 				} else{
-					message.placeholder = 'Please type something!!';
+					messageInput.placeholder = 'Please type something!!';
 					setTimeout(function() {
-						message.placeholder = 'Type something';
+						messageInput.placeholder = 'Type something';
 					}, 1000);
 				}
 			}
 		</script>
-  </body>
+	</body>
 </html>
