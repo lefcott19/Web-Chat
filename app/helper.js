@@ -46,6 +46,15 @@ helper.getHelp = function(action, params, length) {
 	return params.length == length && params.indexOf('') === -1 && params.indexOf('--help') === -1 ? false : helper.getDocs(action);
 }
 
+helper.getUserName = function(userId) {
+	const id = userId || helper.id;
+	return helper.users[id].name.base + (helper.users[id].name.count > 0 ? (' - ' + helper.users[id].name.count) : '');
+}
+
+helper.getAvatarSrc = function(userId) {
+	return helper.avatars[helper.users[userId].avatar.value - 1];
+}
+
 helper.actions = {
 	set: {
 		command: '..set',

@@ -19,7 +19,7 @@ function foundUser(name) {
 	return false;
 }
 
-function getUserName(name) {
+function getNameObj(name) {
 	let count = 0;
 	if (!foundUser(name)) {
 		return name;
@@ -30,6 +30,11 @@ function getUserName(name) {
 		count: count
 	};
 }
+
+function getUserName(name) {
+	return name.base + (name.count > 0 ? (' - ' + name.count) : '');
+}
+
 module.exports = {
 	defineEvents: async io => {
 		io.on('connection', function(socket) {
@@ -43,32 +48,34 @@ module.exports = {
 			});
 
 		  socket.on('Set', function(data) {
-		  	console.log('Recived data:');
-		  	console.log(data);
 		  	let allOk = true;
+		  	let messageToUser = '';
 		  	switch (data[0]) {
 		  		case 'name':
 		  			const name = {
 		  				base: data[1] || 'User',
 		  				count: 0
 		  			};
-		  			users[socket.id].name = getUserName(name);
+		  			users[socket.id].name = getNameObj(name);
+		  			messageToUser = 'You changed the name to ' + getUserName(users[socket.id].name);
 		  			break;
 		  		case 'avatar':
 		  			let result = {};
 		  			if (!avatarValues.includes(data[1])) {
+		  				messageToUser = 'Sorry, \'' + data[1] + '\' is an invalid avatar number';
 		  				result.avatar = null;
 		  				result.error = 'Invalid avatar provided';
 		  				allOk = false;
-								socket.emit('Set', { error: 'Invalid avatar.' });
+							socket.emit('Set', { messageToUser: messageToUser });
 		  			} else {
-		  				users[socket.id].avatar = data[1];
+		  				users[socket.id].avatar.value = data[1];
+		  				messageToUser = 'You changed the avatar to ' + users[socket.id].avatar.value;
 		  				result.avatar = data[1];
 		  			};
 		  			break;
 		  	}
 		  	if (allOk) {
-					io.emit('UpdateUser', { user: auxHelper.excludeKeys(users[socket.id], ignoredKeys, false), id: socket.id });
+					io.emit('UpdateUser', { user: auxHelper.excludeKeys(users[socket.id], ignoredKeys, false), id: socket.id, messageToUser: messageToUser });
 		  	}
 			});
 
@@ -79,7 +86,7 @@ module.exports = {
 			socket.on('GetUserId', function() {
 				console.log('Emit GetUserId');
 				const newUser = {
-					name: getUserName({ base: 'User', count: 0 }),
+					name: getNameObj({ base: 'User', count: 0 }),
 					avatar: {
 						value: mathHelper.getRandomItem(avatarValues),
 						values: avatarValues
@@ -94,12 +101,13 @@ module.exports = {
 			// Sync Users connected after a server restart
 			// Updates the user list
 			socket.on('PostUser', function(user) {
+				socket.emit('ClearChat');
 				console.log('Post User:');
 				console.log(user);
 				const ids = Object.keys(users);
 				for (let k = 0; k < ids.length; k++) {
 					if (user.name.base == users[ids[k]].name.base && user.name.count == users[ids[k]].name.count) {
-						users[ids[k]].name = getUserName(users[ids[k]].name);
+						users[ids[k]].name = getNameObj(users[ids[k]].name);
 			  		io.emit('UpdateUser', { user: auxHelper.excludeKeys(users[ids[k]], ignoredKeys, false), id: socket.id });
 					}
 				}
@@ -114,8 +122,14 @@ module.exports = {
 				socket.emit('GetAvatars', avatars);
 			});
 
+			socket.on('GetMessages', function() {
+				socket.emit('GetMessages', messages);
+			});
+
 			socket.on('SendMessage', function(message) {
-				io.emit('GetMessage', { userId: socket.id, message: message });
+				const newMessage = { userId: socket.id, message: message };
+				messages.push(newMessage);
+				io.emit('GetMessage', newMessage);
 			});
 
 		});

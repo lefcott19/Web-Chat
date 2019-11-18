@@ -52,6 +52,9 @@
 			.userName {
 				position: absolute;
 				transform: translate(0, -50%);
+				font-size: 16px;
+				top: 26%;
+				color: #56D;
 			}
 			.message {
 				position: absolute;
@@ -83,6 +86,7 @@
 			function sendMessage() {
 				if (messageInput.value != '') {
 					events.sendMessage(messageInput.value);
+					messageInput.value = '';
 				} else{
 					messageInput.placeholder = 'Please type something!!';
 					setTimeout(function() {

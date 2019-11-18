@@ -4,6 +4,7 @@ events.defineEvents = function(socket) {
 	socket.on('Connected', function() {
 		socket.emit('GetUsers');
 		socket.emit('GetAvatars');
+		socket.emit('GetMessages');
 		if (helper.id && helper.users[helper.id]) {
 			console.log('emit PostUser');
 			socket.emit('PostUser', helper.users[helper.id]);
@@ -13,14 +14,15 @@ events.defineEvents = function(socket) {
 	});
 
 	socket.on('Set', function(data) {
-		messages.print(null, data.error);
+		messages.print(null, data.messageToUser);
 	});
 
 	socket.on('UpdateUser', function(data) {
 		helper.users[data.id] = data.user;
 		if (data.id === helper.id) {
-			messages.print(null, 'Now you are ' + events.getUserName());
+			messages.print(null, data.messageToUser);
 		}
+		messages.updateUser(data.id);
 	});
 
 	socket.on('GetUserId', function(userId) {
@@ -47,6 +49,14 @@ events.defineEvents = function(socket) {
 
 	socket.on('GetMessage', function(data) {
 		messages.print(data.userId, data.message);
+	});
+
+	socket.on('GetMessages', function(messageList) {
+		messages.fillMessages(messageList);
+	});
+
+	socket.on('ClearChat', function() {
+		messages.clearChat();
 	});
 }
 
@@ -79,8 +89,4 @@ events.sendMessage = function(message) {
 	} else {
 		socket.emit('SendMessage', message);
 	}
-}
-
-events.getUserName = function() {
-	return helper.users[helper.id].name.base + (helper.users[helper.id].name.count > 0 ? (' - ' + helper.users[helper.id].name.count) : '');
 }
