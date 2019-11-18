@@ -18,6 +18,7 @@ app.listen(process.env.PORT || 3500);
 // --- Routes
 // ---------------------------------------------------------------------------
 require('./server/routes/homeRoute')(apiRoutes);
+require('./server/routes/chatRoute')(apiRoutes, app);
 
 app.use('/', apiRoutes);
 process.on('uncaughtException', err => {
