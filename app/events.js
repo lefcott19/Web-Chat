@@ -27,6 +27,7 @@ events.defineEvents = function(socket) {
 
 	socket.on('GetUserId', function(userId) {
 		helper.id = userId;
+		messages.updateUserList();
 	});
 
 	socket.on('GetUsers', function(users) {
@@ -84,5 +85,12 @@ events.sendMessage = function(message) {
 		events.executeCommand(action, message, socket);
 	} else {
 		socket.emit('SendMessage', message);
+	}
+}
+
+events.changeName = function() {
+	const newUserName = prompt('Type your name');
+	if (newUserName) {
+		socket.emit('Set', ['name', newUserName]);
 	}
 }

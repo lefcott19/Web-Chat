@@ -26,6 +26,10 @@ messages.print = function(userId, messageText, animate, customHeightCoef) {
 		messageContainer.appendChild(img);
 
 		let userName = document.createElement('div');
+		if (userId == helper.id) {
+			userName.style.cursor = 'pointer';
+			userName.setAttribute('onclick', 'events.changeName()');
+		}
 		userName.setAttribute('class', 'userName name_' + userId);
 		userName.style.left = messageHeight + 'px';
 		userName.innerHTML = helper.getUserName(userId);
@@ -49,8 +53,6 @@ messages.print = function(userId, messageText, animate, customHeightCoef) {
 	container.scroll(0, container.scrollTopMax);
 
 	if (animate) {
-		// TODO rmeove
-		console.log('Have to animate')
 		messageContainer.style.left = '150%';
 		messageContainer.style.opacity = 0.3;
 		if (img) {
@@ -105,7 +107,13 @@ messages.updateUserList = function() {
 	userList.innerHTML = '';
 	const ids = Object.keys(helper.users);
 	for (let k = 0; k < ids.length; k++) {
-		userList.innerHTML += helper.getUserName(ids[k]) + '<br>';
+		let newUser = null;
+		if (ids[k] == helper.id) {
+			newUser = '<div class = \'userName\' style = \'position: relative; cursor: pointer; text-shadow: 5px 5px 5px; font-size: 18px;\' onclick = \'events.changeName()\'>' + helper.getUserName(ids[k]) + '</div>';
+		} else {
+			newUser = '<div class = \'userName\' style = \'position: relative; color: #123;\'>' + helper.getUserName(ids[k]) + '</div>';
+		}
+		userList.innerHTML += newUser + '<br>';
 	}
 }
 
