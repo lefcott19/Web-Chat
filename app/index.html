@@ -13,6 +13,16 @@
 				left: 100%;
 				width: 10%;
 				height: 80px;
+				cursor: pointer;
+			}
+			#clearChat {
+				position: absolute;
+				transform: translate(-100%);
+				top: 0;
+				left: 100%;
+				width: 10%;
+				height: 80px;
+				cursor: pointer;
 			}
 			#messageInput {
 				position: absolute;
@@ -114,6 +124,7 @@
 		</div>
 		<input type = 'text' id = 'messageInput' placeholder = 'Type something' onkeypress = 'event.keyCode == 13 ? sendMessage() : 0'>
 		<input type = 'button' id = 'send' value = 'Send' onclick = 'sendMessage()'>
+		<input type = 'button' id = 'clearChat' value = 'Clear messages' onclick = 'clearChat()'>
 		<script>
 			const socket = io();
 			const messageInput = document.getElementById('messageInput');
@@ -133,6 +144,10 @@
 						messageInput.placeholder = 'Type something';
 					}, 1000);
 				}
+			}
+
+			function clearChat() {
+				socket.emit('ClearChat');
 			}
 		</script>
 	</body>

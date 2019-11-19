@@ -40,9 +40,7 @@ module.exports = {
 		io.on('connection', function(socket) {
 			socket.emit('Connected');
 
-			console.log('a user connected');
 		  socket.on('disconnect', function() {
-		  	console.log('Delete ' + socket.id);
 		  	io.emit('DeleteUser', socket.id);
 		  	delete users[socket.id];
 			});
@@ -84,7 +82,6 @@ module.exports = {
 			});
 
 			socket.on('GetUserId', function() {
-				console.log('Emit GetUserId');
 				const newUser = {
 					name: getNameObj({ base: 'User', count: 0 }),
 					avatar: {
@@ -102,8 +99,6 @@ module.exports = {
 			// Updates the user list
 			socket.on('PostUser', function(user) {
 				socket.emit('ClearChat');
-				console.log('Post User:');
-				console.log(user);
 				const ids = Object.keys(users);
 				for (let k = 0; k < ids.length; k++) {
 					if (user.name.base == users[ids[k]].name.base && user.name.count == users[ids[k]].name.count) {
@@ -124,6 +119,11 @@ module.exports = {
 
 			socket.on('GetMessages', function() {
 				socket.emit('GetMessages', messages);
+			});
+
+			socket.on('ClearChat', function() {
+				messages = [];
+				io.emit('ClearChat');
 			});
 
 			socket.on('SendMessage', function(message) {
