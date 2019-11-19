@@ -1,34 +1,40 @@
 var messages = {};
-messages.currTop = 0;
-messages.split = 15;
+messages.split = 18;
+messages.currTop = messages.split;
 messages.messageHeight = 60;
 messages.imgSize = messages.messageHeight * 0.8;
+messages.transition = '0.4s';
 
-messages.print = function(userId, messageText) {
+messages.print = function(userId, messageText, animate, customHeightCoef) {
+	const messageHeight = (customHeightCoef || 1) * messages.messageHeight;
 	let messageContainer = document.createElement('div');
 	messageContainer.setAttribute('class', 'messageContainer');
 	messageContainer.style.top = messages.currTop + 'px';
-	messageContainer.style.height = messages.messageHeight + 'px';
+	messageContainer.style.height = messageHeight + 'px';
 	let userName = 'Command line';
+	const imgLeft = (messageHeight / 2) + 'px';
+	const imgTop = imgLeft;
+	let img = null;
 	if (userId) {
-		let img = document.createElement('img');
+		img = document.createElement('img');
 		img.setAttribute('class', 'avatarImg img_' + userId);
 		img.src = helper.getAvatarSrc(userId);
 		img.width = messages.imgSize;
 		img.height = messages.imgSize;
-		img.style.left = (messages.messageHeight / 2) + 'px';
-		img.style.top = (messages.messageHeight / 2) + 'px';
+		img.style.left = imgLeft;
+		img.style.top = imgTop;
 		messageContainer.appendChild(img);
 
 		let userName = document.createElement('div');
 		userName.setAttribute('class', 'userName name_' + userId);
-		userName.style.left = messages.messageHeight + 'px';
+		userName.style.left = messageHeight + 'px';
 		userName.innerHTML = helper.getUserName(userId);
 		let userNameStr = helper.getUserName(userId);
 
 		if (!userNameStr) {
 			userName.innerHTML = 'disconnected';
 			userName.style.textDecoration = 'line-through';
+			messageContainer.style.opacity = 0.6;
 		} else {
 			userName.innerHTML = userNameStr;
 		}
@@ -39,12 +45,40 @@ messages.print = function(userId, messageText) {
 	message.innerHTML = messageText;
 	messageContainer.appendChild(message);
 	container.appendChild(messageContainer);
-	messages.currTop += messages.messageHeight + messages.split;
+	messages.currTop += messageHeight + messages.split;
+	container.scroll(0, container.scrollTopMax);
+
+	if (animate) {
+		// TODO rmeove
+		console.log('Have to animate')
+		messageContainer.style.left = '150%';
+		messageContainer.style.opacity = 0.3;
+		if (img) {
+			img.style.left = '100%';
+			img.style.top = '-100%';
+			img.style.width = (messages.imgSize * 5) + 'px';
+			img.style.height = (messages.imgSize * 5) + 'px';
+			img.style.opacity = 0.3;
+		}
+		setTimeout(function() {
+			messageContainer.style.transition = messages.transition;
+			messageContainer.style.left = '50%';
+			messageContainer.style.opacity = 1;
+			if (img) {
+				img.style.transition = messages.transition;
+				img.style.left = imgLeft;
+				img.style.top = imgLeft;
+				img.style.width = messages.imgSize + 'px';
+				img.style.height = messages.imgSize + 'px';
+				img.style.opacity = 1;
+			}
+		}, 10);
+	}
 }
 
 messages.fillMessages = function(messageList) {
 	for (let k = 0; k < messageList.length; k++) {
-		messages.print(messageList[k].userId, messageList[k].message);
+		messages.print(messageList[k].userId, messageList[k].message, false, 1);
 	}
 }
 
@@ -60,7 +94,7 @@ messages.updateUser = function(userId) {
 		if (!userName) {
 			names[k].innerHTML = 'disconnected';
 			names[k].style.textDecoration = 'line-through';
-			names[k].style.opacity = 0.6;
+			names[k].parentElement.style.opacity = 0.6;
 		} else {
 			names[k].innerHTML = userName;
 		}

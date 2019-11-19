@@ -13,13 +13,13 @@ events.defineEvents = function(socket) {
 	});
 
 	socket.on('Set', function(data) {
-		messages.print(null, data.messageToUser);
+		messages.print(null, data.messageToUser, true, 0.35);
 	});
 
 	socket.on('UpdateUser', function(data) {
 		helper.users[data.id] = data.user;
 		if (data.id === helper.id) {
-			messages.print(null, data.messageToUser);
+			messages.print(null, data.messageToUser, true, 0.35);
 		}
 		messages.updateUser(data.id);
 		messages.updateUserList();
@@ -45,11 +45,12 @@ events.defineEvents = function(socket) {
 	});
 
 	socket.on('GetMessage', function(data) {
-		messages.print(data.userId, data.message);
+		messages.print(data.userId, data.message, true, 1);
 	});
 
 	socket.on('GetMessages', function(messageList) {
 		messages.fillMessages(messageList);
+		container.scroll(0, container.scrollTopMax);
 	});
 
 	socket.on('ClearChat', function() {
@@ -64,15 +65,13 @@ events.executeCommand = function(action, message, socket) {
 
 			// Expecting 2 parameter
 			const helpStr = helper.getHelp(action, params, 2);
-			console.log('helpStr');
-			console.log(helpStr);
 			if (helpStr) {
-				messages.print(null, helpStr);
+				messages.print(null, helpStr, true, 1);
 			} else {
 				if(helper.users[helper.id][params[0]]) {
 					socket.emit('Set', [params[0], params[1]]);
 				} else{
-					messages.print(null, 'You cannot set a value for ' + params[0]);
+					messages.print(null, 'You cannot set a value for ' + params[0], true, 0.35);
 				}
 			}
 			break;
