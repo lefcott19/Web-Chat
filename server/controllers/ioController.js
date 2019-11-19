@@ -5,7 +5,11 @@ let users = {}, userCount = 0, messages = [];
 const avatars = [
 	'https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/7_avatar-512.png',
 	'https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/8_avatar-512.png',
-	'https://cmkt-image-prd.freetls.fastly.net/0.1.0/ps/1382917/910/607/m1/fpnw/wm0/businessman-avatar-icon-01-.jpg?1466426985&s=9c232cc7dfe7b4e1f9252f29e16456e7'
+	'https://justice.org.au/wp-content/uploads/2017/08/avatar-icon.png',
+	'https://icon-library.net/images/avatar-icon/avatar-icon-5.jpg',
+	'https://icon-library.net/images/free-avatar-icon/free-avatar-icon-10.jpg',
+	'https://c8.alamy.com/comp/H833AM/hacker-character-avatar-icon-vector-illustration-design-H833AM.jpg',
+	'https://www.agriuniverse.co.zw/media/com_easysocial/photos/232/582/man-avatar-icon-flat-vector-19152370_large.jpg'
 ], ignoredKeys = ['socket'];
 const avatarValues = auxHelper.arrayOfNums(avatars.length, true);
 
