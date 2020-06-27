@@ -1,4 +1,4 @@
-[https://www.jonathan240196.alwaysdata.et/hen3/](https://www.jonathan240196.alwaysdata.et/hen3/)
+[https://www.jonathan240196.alwaysdata.net/hen3](https://www.jonathan240196.alwaysdata.net/hen3)
 # Web Chat
 
 ### Environment variables
