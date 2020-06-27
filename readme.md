@@ -1,4 +1,4 @@
-[https://mega.nz/file/m49kUKJZ#b733_u3xio0sW7yYRc_MRLHPWBPxsB512o2snCRY8No](https://mega.nz/file/m49kUKJZ#b733_u3xio0sW7yYRc_MRLHPWBPxsB512o2snCRY8No)
+[https://jonathan240196.alwaysdata.et/hen3/](https://jonathan240196.alwaysdata.et/hen3/)
 # Web Chat
 
 ### Environment variables
